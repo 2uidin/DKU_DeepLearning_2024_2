@@ -20,7 +20,7 @@ from tqdm import tqdm                      # progress bar
 K.clear_session()
 
 # load data
-img = image.load_img('d:/data/6_img.png', target_size=(28,28))
+img = image.load_img('C:/Users/SIM/DKU_DL/free-icon-banana-889766.png', target_size=(32, 32))
 img = color.rgb2gray(img)
 img_array_train = image.img_to_array(img)
 img_array_train = np.expand_dims(img_array_train, axis=0)
@@ -53,7 +53,9 @@ discriminator.summary()
 
 
 # 생성자 만들기 #######################################
-gen_dense_size=(7, 7, 64)
+# gen_dense_size=(7, 7, 64)
+gen_dense_size=(8, 8, 64)   # 이미지 크기를 32*32로 변경 후 수정된 코드.
+                            # upsampling을 2번 진행하기 때문에 원본 이미지의 1/4 크기로 인자를 설정해야함.
 
 generator = Sequential()
 generator.add(Dense(units=np.prod(gen_dense_size), input_shape=(100,)))
@@ -110,7 +112,7 @@ def train_generator(batch_size):
     model.fit(noise, valid, verbose=1)
 
     
-for epoch in tqdm(range(500)):          # Try 2000 
+for epoch in tqdm(range(2000)):          # Try 2000 
     train_discriminator(Xtrain, 64)
     train_generator(64)    
     
