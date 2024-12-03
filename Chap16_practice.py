@@ -1,32 +1,39 @@
+import kagglehub
+
+# Download latest version
+path = kagglehub.dataset_download("szrlee/stock-time-series-20050101-to-20171231")
+
+# print("Path to dataset files:", path)
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-df = pd.read_csv('C:/Users/SIM/DKU_DL/cansim-0800020.csv',
-                 skiprows=6, skipfooter=9, engine='python')
+df = pd.read_csv('C:/Users/SIM/DKU_DL/AABA_2006-01-01_to_2018-01-01.csv',
+                #  skiprows=6, skipfooter=9,
+                 engine='python')
 df.head()
 
 # 전처리
-from pandas.tseries.offsets import MonthEnd
+# from pandas.tseries.offsets import MonthEnd
 
-df['Adjustments'] = pd.to_datetime(df['Adjustments']) + \
-                    MonthEnd(1)
-df = df.set_index('Adjustments')
+df['Date'] = pd.to_datetime(df['Date'])
+df = df.set_index('Date')
 print(df.head())
 df.plot()
 
-# 2011/1/1 까지의 데이터를 트레이닝셋.
+# 2017/6/30 까지의 데이터를 트레이닝셋.
 # 그 이후 데이터를 테스트셋으로 한다.
 # 예측할 feature는 Unadjusted
 
-split_date = pd.Timestamp('01-01-2011')
+split_date = pd.Timestamp('2017-06-30')
 
-train = df.loc[:split_date, ['Unadjusted']]
-test = df.loc[split_date:, ['Unadjusted']]
+train = df.loc[:split_date, ['Close']]
+test = df.loc[split_date:, ['Close']]
 
 ax = train.plot()
 test.plot(ax=ax)
 plt.legend(['train', 'test'])
+plt.show()
 
 # 데이터 정규화
 from sklearn.preprocessing import MinMaxScaler
@@ -107,11 +114,8 @@ from sklearn.metrics import mean_squared_error
 print('Mean squared error: {0:.2f}'.\
       format(mean_squared_error(y_test, y_pred))) 
 
-
-
 plt.figure()
 plt.plot(y_pred)
 plt.plot(y_test)
 plt.legend(['predict', 'actual'])
-
-
+plt.show()

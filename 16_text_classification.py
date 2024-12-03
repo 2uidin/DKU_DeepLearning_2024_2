@@ -35,7 +35,7 @@ print(X_train)
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Embedding, Flatten
 
-embedding_dim = 4
+embedding_dim = 4   # Input 문장 변경 시 바꾸면 될 듯
 
 model = Sequential()
 model.add(Embedding(vocab_size, embedding_dim, input_length=max_len))
@@ -50,3 +50,21 @@ print(result)
 pred = [1 if i > 0.5 else 0 for i in result]
 print(pred)
 
+# 테스트 문장
+test_sentence = 'you are excellent'
+
+# 단어 집합에 맞게 정수 인코딩
+test_sequence = tokenizer.texts_to_sequences([test_sentence])
+print('테스트 문장 정수 인코딩 결과:', test_sequence)
+
+# 패딩 적용
+test_padded = pad_sequences(test_sequence, maxlen=max_len, padding='post')
+print('패딩 결과:', test_padded)
+
+# 모델 예측
+result = model.predict(test_padded)
+print('예측 결과:', result)
+
+# 이진 분류로 변환
+pred = [1 if i > 0.5 else 0 for i in result]
+print('예측 클래스:', pred)
